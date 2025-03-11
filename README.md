@@ -3,6 +3,9 @@
 
 This app leverages machine learning to predict cloudburst chances based on weather data. It collects weather data through Open Meteo API and uses Random Forest and Multiple Linear Regression models to predict the likelihood of a cloudburst occurring in a given location. The app displays the predictions along with visualizations.
 
+## This App is live and can be accessed at
+ https://cloudburst-prediction-system.streamlit.app/
+
 ## Features
 - Fetches weather data for a specific location using the Open Meteo API.
 - Uses machine learning models (Random Forest and Multiple Linear Regression) to predict the likelihood of a cloudburst.
