@@ -8,9 +8,12 @@ def get_coordinates(location_name, max_retries=3, pause_seconds=1):
     Retries up to max_retries times on temporary failures.
     Returns (None, None) if lookup fails or location not found.
     """
+    # Add a timeout so we don’t hang forever
     geolocator = Nominatim(user_agent="weather_data_collector", timeout=10)
+
     for attempt in range(1, max_retries + 1):
         try:
+            # Perform the lookup
             loc = geolocator.geocode(location_name)
             if loc:
                 return loc.latitude, loc.longitude
@@ -18,11 +21,11 @@ def get_coordinates(location_name, max_retries=3, pause_seconds=1):
             return None, None
 
         except (GeocoderTimedOut, GeocoderUnavailable) as exc:
-            # on last attempt, give up
+            # Last attempt → give up
             if attempt == max_retries:
                 return None, None
-            # otherwise back off and retry
+            # Otherwise back off before retrying
             time.sleep(pause_seconds)
 
-    # fallback
+    # Fallback
     return None, None
