@@ -1,20 +1,20 @@
-from geopy.geocoders import GoogleV3
-from geopy.exc import GeocoderServiceError, GeocoderUnavailable
+from geopy.geocoders import Photon
+from geopy.exc import GeocoderUnavailable, GeocoderTimedOut
 
-def get_coordinates(location_name):
+def get_coordinates(location_name, timeout=10):
     """
-    Uses GoogleV3 geocoder (IP-based quota) to look up lat/lon for a given place.
-    No API key needed; will use Google’s free, rate-limited endpoint.
+    Uses the Photon geocoder to turn a place name into (lat, lon).
+    Returns (latitude, longitude) or (None, None) on failure.
     """
-    geolocator = GoogleV3(user_agent="weather_data_collector")
+    geolocator = Photon(user_agent="weather_data_collector", timeout=timeout)
     try:
-        # Timeout to avoid hanging indefinitely
-        location = geolocator.geocode(location_name, timeout=10)
-    except (GeocoderServiceError, GeocoderUnavailable) as e:
-        print(f"[geocode] Service error for '{location_name}': {e}")
+        location = geolocator.geocode(location_name)
+    except (GeocoderUnavailable, GeocoderTimedOut) as e:
+        print(f"Geocoding service error: {e}")
         return None, None
+
     if location:
         return location.latitude, location.longitude
     else:
-        print(f"[geocode] Location '{location_name}' not found.")
+        print(f"Location '{location_name}' not found.")
         return None, None
